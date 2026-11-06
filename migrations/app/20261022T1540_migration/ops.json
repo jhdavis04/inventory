@@ -1,0 +1,2236 @@
+[
+  {
+    "id": "schema.public",
+    "label": "Create schema \"public\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "Create schema \"public\"",
+        "sql": "CREATE SCHEMA IF NOT EXISTS \"public\"",
+        "params": []
+      }
+    ],
+    "postcheck": []
+  },
+  {
+    "id": "table.Product",
+    "label": "Create table \"Product\"",
+    "summary": "Creates table \"Product\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Product"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Product\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Product\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Product\"",
+        "sql": "CREATE TABLE \"public\".\"Product\" (\n  \"business_id\" int4 NOT NULL,\n  \"category_id\" int4,\n  \"cost\" numeric(10,2),\n  \"description\" text,\n  \"id\" SERIAL NOT NULL,\n  \"name\" text NOT NULL,\n  \"price\" numeric(10,2) NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Product\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Product\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.batch_supply_usage",
+    "label": "Create table \"batch_supply_usage\"",
+    "summary": "Creates table \"batch_supply_usage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "batch_supply_usage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"batch_supply_usage\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"batch_supply_usage\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"batch_supply_usage\"",
+        "sql": "CREATE TABLE \"public\".\"batch_supply_usage\" (\n  \"batch_id\" int4 NOT NULL,\n  \"qty_used\" numeric(10,2) NOT NULL,\n  \"supply_lot_id\" int4 NOT NULL,\n  PRIMARY KEY (\"batch_id\", \"supply_lot_id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"batch_supply_usage\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"batch_supply_usage\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.batches",
+    "label": "Create table \"batches\"",
+    "summary": "Creates table \"batches\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "batches"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"batches\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"batches\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"batches\"",
+        "sql": "CREATE TABLE \"public\".\"batches\" (\n  \"id\" SERIAL NOT NULL,\n  \"made_at\" timestamptz NOT NULL,\n  \"product_id\" int4 NOT NULL,\n  \"qty_made\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"batches\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"batches\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.bill_of_materials",
+    "label": "Create table \"bill_of_materials\"",
+    "summary": "Creates table \"bill_of_materials\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "bill_of_materials"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"bill_of_materials\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"bill_of_materials\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"bill_of_materials\"",
+        "sql": "CREATE TABLE \"public\".\"bill_of_materials\" (\n  \"product_id\" int4 NOT NULL,\n  \"qty_required\" numeric(10,2) NOT NULL,\n  \"supply_id\" int4 NOT NULL,\n  \"unit\" text NOT NULL,\n  PRIMARY KEY (\"product_id\", \"supply_id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"bill_of_materials\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"bill_of_materials\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.businesses",
+    "label": "Create table \"businesses\"",
+    "summary": "Creates table \"businesses\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "businesses"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"businesses\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"businesses\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"businesses\"",
+        "sql": "CREATE TABLE \"public\".\"businesses\" (\n  \"created_at\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"name\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"businesses\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"businesses\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.categories",
+    "label": "Create table \"categories\"",
+    "summary": "Creates table \"categories\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "categories"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"categories\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"categories\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"categories\"",
+        "sql": "CREATE TABLE \"public\".\"categories\" (\n  \"business_id\" int4 NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"name\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"categories\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"categories\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.external_order_items",
+    "label": "Create table \"external_order_items\"",
+    "summary": "Creates table \"external_order_items\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "external_order_items"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"external_order_items\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"external_order_items\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"external_order_items\"",
+        "sql": "CREATE TABLE \"public\".\"external_order_items\" (\n  \"external_line_item_id\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"order_id\" int4 NOT NULL,\n  \"product_id\" int4 NOT NULL,\n  \"quantity\" int4 NOT NULL,\n  \"unit_price\" numeric(10,2) NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"external_order_items\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"external_order_items\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.external_orders",
+    "label": "Create table \"external_orders\"",
+    "summary": "Creates table \"external_orders\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "external_orders"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"external_orders\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"external_orders\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"external_orders\"",
+        "sql": "CREATE TABLE \"public\".\"external_orders\" (\n  \"business_id\" int4 NOT NULL,\n  \"external_order_id\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"last_synced_at\" timestamptz NOT NULL,\n  \"ordered_at\" timestamptz NOT NULL,\n  \"sales_channel_id\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"external_orders\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"external_orders\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.product_mappings",
+    "label": "Create table \"product_mappings\"",
+    "summary": "Creates table \"product_mappings\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "product_mappings"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"product_mappings\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"product_mappings\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"product_mappings\"",
+        "sql": "CREATE TABLE \"public\".\"product_mappings\" (\n  \"[product_id]\" int4 NOT NULL,\n  \"external_sku_or_product_id\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"sales_channel_id\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"product_mappings\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"product_mappings\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.sales_channel",
+    "label": "Create table \"sales_channel\"",
+    "summary": "Creates table \"sales_channel\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "sales_channel"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"sales_channel\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"sales_channel\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"sales_channel\"",
+        "sql": "CREATE TABLE \"public\".\"sales_channel\" (\n  \"access_token\" text,\n  \"business_id\" int4 NOT NULL,\n  \"created_at\" timestamptz DEFAULT (now()) NOT NULL,\n  \"display_name\" text NOT NULL,\n  \"external_shop_id\" text,\n  \"id\" SERIAL NOT NULL,\n  \"last_synced_at\" timestamptz,\n  \"refresh_token\" text,\n  \"type\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"sales_channel\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"sales_channel\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.supplies",
+    "label": "Create table \"supplies\"",
+    "summary": "Creates table \"supplies\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "supplies"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"supplies\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"supplies\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"supplies\"",
+        "sql": "CREATE TABLE \"public\".\"supplies\" (\n  \"business_id\" int4 NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"name\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"supplies\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"supplies\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.supply_lots",
+    "label": "Create table \"supply_lots\"",
+    "summary": "Creates table \"supply_lots\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "supply_lots"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"supply_lots\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"supply_lots\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"supply_lots\"",
+        "sql": "CREATE TABLE \"public\".\"supply_lots\" (\n  \"id\" SERIAL NOT NULL,\n  \"purchased_at\" timestamptz NOT NULL,\n  \"qty_purchased\" numeric(10,2) NOT NULL,\n  \"qty_remaining\" numeric(10,2) NOT NULL,\n  \"supply_id\" int4 NOT NULL,\n  \"total_cost\" numeric(10,2) NOT NULL,\n  \"unit\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"supply_lots\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"supply_lots\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.users",
+    "label": "Create table \"users\"",
+    "summary": "Creates table \"users\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "users"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"users\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"users\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"users\"",
+        "sql": "CREATE TABLE \"public\".\"users\" (\n  \"business_id\" int4 NOT NULL,\n  \"created_at\" timestamptz DEFAULT (now()) NOT NULL,\n  \"email\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"name\" text,\n  \"role\" text DEFAULT 'owner' NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"users\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"users\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.categories.categories_business_id_name_key",
+    "label": "Add unique constraint on \"categories\" (business_id, name)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "categories_business_id_name_key",
+        "table": "categories"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"categories_business_id_name_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "categories_business_id_name_key",
+          "public",
+          "\"public\".\"categories\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"categories_business_id_name_key\"",
+        "sql": "ALTER TABLE \"public\".\"categories\" ADD CONSTRAINT \"categories_business_id_name_key\" UNIQUE (\"business_id\", \"name\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"categories_business_id_name_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "categories_business_id_name_key",
+          "public",
+          "\"public\".\"categories\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.external_order_items.external_order_items_order_id_external_line_item_id_key",
+    "label": "Add unique constraint on \"external_order_items\" (order_id, external_line_item_id)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "external_order_items_order_id_external_line_item_id_key",
+        "table": "external_order_items"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"external_order_items_order_id_external_line_item_id_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "external_order_items_order_id_external_line_item_id_key",
+          "public",
+          "\"public\".\"external_order_items\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"external_order_items_order_id_external_line_item_id_key\"",
+        "sql": "ALTER TABLE \"public\".\"external_order_items\" ADD CONSTRAINT \"external_order_items_order_id_external_line_item_id_key\" UNIQUE (\"order_id\", \"external_line_item_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"external_order_items_order_id_external_line_item_id_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "external_order_items_order_id_external_line_item_id_key",
+          "public",
+          "\"public\".\"external_order_items\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.external_orders.external_orders_sales_channel_id_external_order_id_key",
+    "label": "Add unique constraint on \"external_orders\" (sales_channel_id, external_order_id)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "external_orders_sales_channel_id_external_order_id_key",
+        "table": "external_orders"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"external_orders_sales_channel_id_external_order_id_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "external_orders_sales_channel_id_external_order_id_key",
+          "public",
+          "\"public\".\"external_orders\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"external_orders_sales_channel_id_external_order_id_key\"",
+        "sql": "ALTER TABLE \"public\".\"external_orders\" ADD CONSTRAINT \"external_orders_sales_channel_id_external_order_id_key\" UNIQUE (\"sales_channel_id\", \"external_order_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"external_orders_sales_channel_id_external_order_id_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "external_orders_sales_channel_id_external_order_id_key",
+          "public",
+          "\"public\".\"external_orders\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.product_mappings.product_mappings_sales_channel_id_external_sku_or_product_id_ke",
+    "label": "Add unique constraint on \"product_mappings\" (sales_channel_id, external_sku_or_product_id)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "product_mappings_sales_channel_id_external_sku_or_product_id_ke",
+        "table": "product_mappings"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"product_mappings_sales_channel_id_external_sku_or_product_id_ke\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "product_mappings_sales_channel_id_external_sku_or_product_id_ke",
+          "public",
+          "\"public\".\"product_mappings\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"product_mappings_sales_channel_id_external_sku_or_product_id_ke\"",
+        "sql": "ALTER TABLE \"public\".\"product_mappings\" ADD CONSTRAINT \"product_mappings_sales_channel_id_external_sku_or_product_id_ke\" UNIQUE (\"sales_channel_id\", \"external_sku_or_product_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"product_mappings_sales_channel_id_external_sku_or_product_id_ke\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "product_mappings_sales_channel_id_external_sku_or_product_id_ke",
+          "public",
+          "\"public\".\"product_mappings\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.sales_channel.sales_channel_business_id_type_external_shop_id_key",
+    "label": "Add unique constraint on \"sales_channel\" (business_id, type, external_shop_id)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "sales_channel_business_id_type_external_shop_id_key",
+        "table": "sales_channel"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"sales_channel_business_id_type_external_shop_id_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "sales_channel_business_id_type_external_shop_id_key",
+          "public",
+          "\"public\".\"sales_channel\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"sales_channel_business_id_type_external_shop_id_key\"",
+        "sql": "ALTER TABLE \"public\".\"sales_channel\" ADD CONSTRAINT \"sales_channel_business_id_type_external_shop_id_key\" UNIQUE (\"business_id\", \"type\", \"external_shop_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"sales_channel_business_id_type_external_shop_id_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "sales_channel_business_id_type_external_shop_id_key",
+          "public",
+          "\"public\".\"sales_channel\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.users.users_email_key",
+    "label": "Add unique constraint on \"users\" (email)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "users_email_key",
+        "table": "users"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"users_email_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "users_email_key",
+          "public",
+          "\"public\".\"users\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"users_email_key\"",
+        "sql": "ALTER TABLE \"public\".\"users\" ADD CONSTRAINT \"users_email_key\" UNIQUE (\"email\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"users_email_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "users_email_key",
+          "public",
+          "\"public\".\"users\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Product.Product_business_id_idx_23036de8",
+    "label": "Create index \"Product_business_id_idx_23036de8\" on \"Product\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Product_business_id_idx_23036de8",
+        "table": "Product"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Product_business_id_idx_23036de8\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Product_business_id_idx_23036de8\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Product_business_id_idx_23036de8\"",
+        "sql": "CREATE INDEX \"Product_business_id_idx_23036de8\" ON \"public\".\"Product\" (\"business_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Product_business_id_idx_23036de8\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Product_business_id_idx_23036de8\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Product.Product_category_id_idx_da7213d4",
+    "label": "Create index \"Product_category_id_idx_da7213d4\" on \"Product\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Product_category_id_idx_da7213d4",
+        "table": "Product"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Product_category_id_idx_da7213d4\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Product_category_id_idx_da7213d4\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Product_category_id_idx_da7213d4\"",
+        "sql": "CREATE INDEX \"Product_category_id_idx_da7213d4\" ON \"public\".\"Product\" (\"category_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Product_category_id_idx_da7213d4\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Product_category_id_idx_da7213d4\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.batch_supply_usage.batch_supply_usage_batch_id_idx_49ba28fa",
+    "label": "Create index \"batch_supply_usage_batch_id_idx_49ba28fa\" on \"batch_supply_usage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "batch_supply_usage_batch_id_idx_49ba28fa",
+        "table": "batch_supply_usage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"batch_supply_usage_batch_id_idx_49ba28fa\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"batch_supply_usage_batch_id_idx_49ba28fa\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"batch_supply_usage_batch_id_idx_49ba28fa\"",
+        "sql": "CREATE INDEX \"batch_supply_usage_batch_id_idx_49ba28fa\" ON \"public\".\"batch_supply_usage\" (\"batch_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"batch_supply_usage_batch_id_idx_49ba28fa\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"batch_supply_usage_batch_id_idx_49ba28fa\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.batch_supply_usage.batch_supply_usage_supply_lot_id_idx_7ea4c78a",
+    "label": "Create index \"batch_supply_usage_supply_lot_id_idx_7ea4c78a\" on \"batch_supply_usage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "batch_supply_usage_supply_lot_id_idx_7ea4c78a",
+        "table": "batch_supply_usage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"batch_supply_usage_supply_lot_id_idx_7ea4c78a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"batch_supply_usage_supply_lot_id_idx_7ea4c78a\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"batch_supply_usage_supply_lot_id_idx_7ea4c78a\"",
+        "sql": "CREATE INDEX \"batch_supply_usage_supply_lot_id_idx_7ea4c78a\" ON \"public\".\"batch_supply_usage\" (\"supply_lot_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"batch_supply_usage_supply_lot_id_idx_7ea4c78a\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"batch_supply_usage_supply_lot_id_idx_7ea4c78a\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.batches.batches_product_id_idx_22a2b7d2",
+    "label": "Create index \"batches_product_id_idx_22a2b7d2\" on \"batches\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "batches_product_id_idx_22a2b7d2",
+        "table": "batches"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"batches_product_id_idx_22a2b7d2\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"batches_product_id_idx_22a2b7d2\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"batches_product_id_idx_22a2b7d2\"",
+        "sql": "CREATE INDEX \"batches_product_id_idx_22a2b7d2\" ON \"public\".\"batches\" (\"product_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"batches_product_id_idx_22a2b7d2\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"batches_product_id_idx_22a2b7d2\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.bill_of_materials.bill_of_materials_product_id_idx_22a2b7d2",
+    "label": "Create index \"bill_of_materials_product_id_idx_22a2b7d2\" on \"bill_of_materials\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "bill_of_materials_product_id_idx_22a2b7d2",
+        "table": "bill_of_materials"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"bill_of_materials_product_id_idx_22a2b7d2\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"bill_of_materials_product_id_idx_22a2b7d2\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"bill_of_materials_product_id_idx_22a2b7d2\"",
+        "sql": "CREATE INDEX \"bill_of_materials_product_id_idx_22a2b7d2\" ON \"public\".\"bill_of_materials\" (\"product_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"bill_of_materials_product_id_idx_22a2b7d2\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"bill_of_materials_product_id_idx_22a2b7d2\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.bill_of_materials.bill_of_materials_supply_id_idx_6ccef6d6",
+    "label": "Create index \"bill_of_materials_supply_id_idx_6ccef6d6\" on \"bill_of_materials\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "bill_of_materials_supply_id_idx_6ccef6d6",
+        "table": "bill_of_materials"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"bill_of_materials_supply_id_idx_6ccef6d6\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"bill_of_materials_supply_id_idx_6ccef6d6\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"bill_of_materials_supply_id_idx_6ccef6d6\"",
+        "sql": "CREATE INDEX \"bill_of_materials_supply_id_idx_6ccef6d6\" ON \"public\".\"bill_of_materials\" (\"supply_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"bill_of_materials_supply_id_idx_6ccef6d6\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"bill_of_materials_supply_id_idx_6ccef6d6\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.categories.categories_business_id_idx_23036de8",
+    "label": "Create index \"categories_business_id_idx_23036de8\" on \"categories\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "categories_business_id_idx_23036de8",
+        "table": "categories"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"categories_business_id_idx_23036de8\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"categories_business_id_idx_23036de8\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"categories_business_id_idx_23036de8\"",
+        "sql": "CREATE INDEX \"categories_business_id_idx_23036de8\" ON \"public\".\"categories\" (\"business_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"categories_business_id_idx_23036de8\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"categories_business_id_idx_23036de8\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.external_order_items.external_order_items_order_id_idx_39ad19ad",
+    "label": "Create index \"external_order_items_order_id_idx_39ad19ad\" on \"external_order_items\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "external_order_items_order_id_idx_39ad19ad",
+        "table": "external_order_items"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"external_order_items_order_id_idx_39ad19ad\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"external_order_items_order_id_idx_39ad19ad\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"external_order_items_order_id_idx_39ad19ad\"",
+        "sql": "CREATE INDEX \"external_order_items_order_id_idx_39ad19ad\" ON \"public\".\"external_order_items\" (\"order_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"external_order_items_order_id_idx_39ad19ad\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"external_order_items_order_id_idx_39ad19ad\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.external_order_items.external_order_items_product_id_idx_22a2b7d2",
+    "label": "Create index \"external_order_items_product_id_idx_22a2b7d2\" on \"external_order_items\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "external_order_items_product_id_idx_22a2b7d2",
+        "table": "external_order_items"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"external_order_items_product_id_idx_22a2b7d2\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"external_order_items_product_id_idx_22a2b7d2\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"external_order_items_product_id_idx_22a2b7d2\"",
+        "sql": "CREATE INDEX \"external_order_items_product_id_idx_22a2b7d2\" ON \"public\".\"external_order_items\" (\"product_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"external_order_items_product_id_idx_22a2b7d2\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"external_order_items_product_id_idx_22a2b7d2\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.external_orders.external_orders_business_id_idx_23036de8",
+    "label": "Create index \"external_orders_business_id_idx_23036de8\" on \"external_orders\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "external_orders_business_id_idx_23036de8",
+        "table": "external_orders"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"external_orders_business_id_idx_23036de8\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"external_orders_business_id_idx_23036de8\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"external_orders_business_id_idx_23036de8\"",
+        "sql": "CREATE INDEX \"external_orders_business_id_idx_23036de8\" ON \"public\".\"external_orders\" (\"business_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"external_orders_business_id_idx_23036de8\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"external_orders_business_id_idx_23036de8\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.external_orders.external_orders_sales_channel_id_idx_23b3e2d5",
+    "label": "Create index \"external_orders_sales_channel_id_idx_23b3e2d5\" on \"external_orders\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "external_orders_sales_channel_id_idx_23b3e2d5",
+        "table": "external_orders"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"external_orders_sales_channel_id_idx_23b3e2d5\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"external_orders_sales_channel_id_idx_23b3e2d5\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"external_orders_sales_channel_id_idx_23b3e2d5\"",
+        "sql": "CREATE INDEX \"external_orders_sales_channel_id_idx_23b3e2d5\" ON \"public\".\"external_orders\" (\"sales_channel_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"external_orders_sales_channel_id_idx_23b3e2d5\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"external_orders_sales_channel_id_idx_23b3e2d5\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.product_mappings.product_mappings_[product_id]_idx_3a1ffd05",
+    "label": "Create index \"product_mappings_[product_id]_idx_3a1ffd05\" on \"product_mappings\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "product_mappings_[product_id]_idx_3a1ffd05",
+        "table": "product_mappings"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"product_mappings_[product_id]_idx_3a1ffd05\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"product_mappings_[product_id]_idx_3a1ffd05\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"product_mappings_[product_id]_idx_3a1ffd05\"",
+        "sql": "CREATE INDEX \"product_mappings_[product_id]_idx_3a1ffd05\" ON \"public\".\"product_mappings\" (\"[product_id]\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"product_mappings_[product_id]_idx_3a1ffd05\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"product_mappings_[product_id]_idx_3a1ffd05\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.product_mappings.product_mappings_sales_channel_id_idx_23b3e2d5",
+    "label": "Create index \"product_mappings_sales_channel_id_idx_23b3e2d5\" on \"product_mappings\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "product_mappings_sales_channel_id_idx_23b3e2d5",
+        "table": "product_mappings"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"product_mappings_sales_channel_id_idx_23b3e2d5\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"product_mappings_sales_channel_id_idx_23b3e2d5\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"product_mappings_sales_channel_id_idx_23b3e2d5\"",
+        "sql": "CREATE INDEX \"product_mappings_sales_channel_id_idx_23b3e2d5\" ON \"public\".\"product_mappings\" (\"sales_channel_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"product_mappings_sales_channel_id_idx_23b3e2d5\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"product_mappings_sales_channel_id_idx_23b3e2d5\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.sales_channel.sales_channel_business_id_idx_23036de8",
+    "label": "Create index \"sales_channel_business_id_idx_23036de8\" on \"sales_channel\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "sales_channel_business_id_idx_23036de8",
+        "table": "sales_channel"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"sales_channel_business_id_idx_23036de8\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"sales_channel_business_id_idx_23036de8\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"sales_channel_business_id_idx_23036de8\"",
+        "sql": "CREATE INDEX \"sales_channel_business_id_idx_23036de8\" ON \"public\".\"sales_channel\" (\"business_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"sales_channel_business_id_idx_23036de8\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"sales_channel_business_id_idx_23036de8\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.supplies.supplies_business_id_idx_23036de8",
+    "label": "Create index \"supplies_business_id_idx_23036de8\" on \"supplies\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "supplies_business_id_idx_23036de8",
+        "table": "supplies"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"supplies_business_id_idx_23036de8\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"supplies_business_id_idx_23036de8\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"supplies_business_id_idx_23036de8\"",
+        "sql": "CREATE INDEX \"supplies_business_id_idx_23036de8\" ON \"public\".\"supplies\" (\"business_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"supplies_business_id_idx_23036de8\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"supplies_business_id_idx_23036de8\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.supply_lots.supply_lots_supply_id_idx_6ccef6d6",
+    "label": "Create index \"supply_lots_supply_id_idx_6ccef6d6\" on \"supply_lots\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "supply_lots_supply_id_idx_6ccef6d6",
+        "table": "supply_lots"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"supply_lots_supply_id_idx_6ccef6d6\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"supply_lots_supply_id_idx_6ccef6d6\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"supply_lots_supply_id_idx_6ccef6d6\"",
+        "sql": "CREATE INDEX \"supply_lots_supply_id_idx_6ccef6d6\" ON \"public\".\"supply_lots\" (\"supply_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"supply_lots_supply_id_idx_6ccef6d6\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"supply_lots_supply_id_idx_6ccef6d6\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.users.users_business_id_idx_23036de8",
+    "label": "Create index \"users_business_id_idx_23036de8\" on \"users\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "users_business_id_idx_23036de8",
+        "table": "users"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"users_business_id_idx_23036de8\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"users_business_id_idx_23036de8\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"users_business_id_idx_23036de8\"",
+        "sql": "CREATE INDEX \"users_business_id_idx_23036de8\" ON \"public\".\"users\" (\"business_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"users_business_id_idx_23036de8\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"users_business_id_idx_23036de8\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Product.Product_business_id_fkey",
+    "label": "Add foreign key \"Product_business_id_fkey\" on \"Product\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Product_business_id_fkey",
+        "table": "Product"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Product_business_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Product_business_id_fkey",
+          "public",
+          "\"public\".\"Product\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Product_business_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Product\"\nADD CONSTRAINT \"Product_business_id_fkey\"\nFOREIGN KEY (\"business_id\")\nREFERENCES \"public\".\"businesses\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Product_business_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Product_business_id_fkey",
+          "public",
+          "\"public\".\"Product\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Product.Product_category_id_fkey",
+    "label": "Add foreign key \"Product_category_id_fkey\" on \"Product\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Product_category_id_fkey",
+        "table": "Product"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Product_category_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Product_category_id_fkey",
+          "public",
+          "\"public\".\"Product\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Product_category_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Product\"\nADD CONSTRAINT \"Product_category_id_fkey\"\nFOREIGN KEY (\"category_id\")\nREFERENCES \"public\".\"categories\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Product_category_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Product_category_id_fkey",
+          "public",
+          "\"public\".\"Product\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.batch_supply_usage.batch_supply_usage_batch_id_fkey",
+    "label": "Add foreign key \"batch_supply_usage_batch_id_fkey\" on \"batch_supply_usage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "batch_supply_usage_batch_id_fkey",
+        "table": "batch_supply_usage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"batch_supply_usage_batch_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "batch_supply_usage_batch_id_fkey",
+          "public",
+          "\"public\".\"batch_supply_usage\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"batch_supply_usage_batch_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"batch_supply_usage\"\nADD CONSTRAINT \"batch_supply_usage_batch_id_fkey\"\nFOREIGN KEY (\"batch_id\")\nREFERENCES \"public\".\"batches\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"batch_supply_usage_batch_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "batch_supply_usage_batch_id_fkey",
+          "public",
+          "\"public\".\"batch_supply_usage\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.batch_supply_usage.batch_supply_usage_supply_lot_id_fkey",
+    "label": "Add foreign key \"batch_supply_usage_supply_lot_id_fkey\" on \"batch_supply_usage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "batch_supply_usage_supply_lot_id_fkey",
+        "table": "batch_supply_usage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"batch_supply_usage_supply_lot_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "batch_supply_usage_supply_lot_id_fkey",
+          "public",
+          "\"public\".\"batch_supply_usage\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"batch_supply_usage_supply_lot_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"batch_supply_usage\"\nADD CONSTRAINT \"batch_supply_usage_supply_lot_id_fkey\"\nFOREIGN KEY (\"supply_lot_id\")\nREFERENCES \"public\".\"supply_lots\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"batch_supply_usage_supply_lot_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "batch_supply_usage_supply_lot_id_fkey",
+          "public",
+          "\"public\".\"batch_supply_usage\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.batches.batches_product_id_fkey",
+    "label": "Add foreign key \"batches_product_id_fkey\" on \"batches\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "batches_product_id_fkey",
+        "table": "batches"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"batches_product_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "batches_product_id_fkey",
+          "public",
+          "\"public\".\"batches\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"batches_product_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"batches\"\nADD CONSTRAINT \"batches_product_id_fkey\"\nFOREIGN KEY (\"product_id\")\nREFERENCES \"public\".\"Product\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"batches_product_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "batches_product_id_fkey",
+          "public",
+          "\"public\".\"batches\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.bill_of_materials.bill_of_materials_product_id_fkey",
+    "label": "Add foreign key \"bill_of_materials_product_id_fkey\" on \"bill_of_materials\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "bill_of_materials_product_id_fkey",
+        "table": "bill_of_materials"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"bill_of_materials_product_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "bill_of_materials_product_id_fkey",
+          "public",
+          "\"public\".\"bill_of_materials\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"bill_of_materials_product_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"bill_of_materials\"\nADD CONSTRAINT \"bill_of_materials_product_id_fkey\"\nFOREIGN KEY (\"product_id\")\nREFERENCES \"public\".\"Product\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"bill_of_materials_product_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "bill_of_materials_product_id_fkey",
+          "public",
+          "\"public\".\"bill_of_materials\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.bill_of_materials.bill_of_materials_supply_id_fkey",
+    "label": "Add foreign key \"bill_of_materials_supply_id_fkey\" on \"bill_of_materials\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "bill_of_materials_supply_id_fkey",
+        "table": "bill_of_materials"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"bill_of_materials_supply_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "bill_of_materials_supply_id_fkey",
+          "public",
+          "\"public\".\"bill_of_materials\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"bill_of_materials_supply_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"bill_of_materials\"\nADD CONSTRAINT \"bill_of_materials_supply_id_fkey\"\nFOREIGN KEY (\"supply_id\")\nREFERENCES \"public\".\"supplies\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"bill_of_materials_supply_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "bill_of_materials_supply_id_fkey",
+          "public",
+          "\"public\".\"bill_of_materials\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.categories.categories_business_id_fkey",
+    "label": "Add foreign key \"categories_business_id_fkey\" on \"categories\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "categories_business_id_fkey",
+        "table": "categories"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"categories_business_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "categories_business_id_fkey",
+          "public",
+          "\"public\".\"categories\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"categories_business_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"categories\"\nADD CONSTRAINT \"categories_business_id_fkey\"\nFOREIGN KEY (\"business_id\")\nREFERENCES \"public\".\"businesses\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"categories_business_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "categories_business_id_fkey",
+          "public",
+          "\"public\".\"categories\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.external_order_items.external_order_items_order_id_fkey",
+    "label": "Add foreign key \"external_order_items_order_id_fkey\" on \"external_order_items\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "external_order_items_order_id_fkey",
+        "table": "external_order_items"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"external_order_items_order_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "external_order_items_order_id_fkey",
+          "public",
+          "\"public\".\"external_order_items\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"external_order_items_order_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"external_order_items\"\nADD CONSTRAINT \"external_order_items_order_id_fkey\"\nFOREIGN KEY (\"order_id\")\nREFERENCES \"public\".\"external_orders\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"external_order_items_order_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "external_order_items_order_id_fkey",
+          "public",
+          "\"public\".\"external_order_items\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.external_order_items.external_order_items_product_id_fkey",
+    "label": "Add foreign key \"external_order_items_product_id_fkey\" on \"external_order_items\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "external_order_items_product_id_fkey",
+        "table": "external_order_items"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"external_order_items_product_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "external_order_items_product_id_fkey",
+          "public",
+          "\"public\".\"external_order_items\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"external_order_items_product_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"external_order_items\"\nADD CONSTRAINT \"external_order_items_product_id_fkey\"\nFOREIGN KEY (\"product_id\")\nREFERENCES \"public\".\"Product\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"external_order_items_product_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "external_order_items_product_id_fkey",
+          "public",
+          "\"public\".\"external_order_items\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.external_orders.external_orders_business_id_fkey",
+    "label": "Add foreign key \"external_orders_business_id_fkey\" on \"external_orders\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "external_orders_business_id_fkey",
+        "table": "external_orders"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"external_orders_business_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "external_orders_business_id_fkey",
+          "public",
+          "\"public\".\"external_orders\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"external_orders_business_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"external_orders\"\nADD CONSTRAINT \"external_orders_business_id_fkey\"\nFOREIGN KEY (\"business_id\")\nREFERENCES \"public\".\"businesses\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"external_orders_business_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "external_orders_business_id_fkey",
+          "public",
+          "\"public\".\"external_orders\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.external_orders.external_orders_sales_channel_id_fkey",
+    "label": "Add foreign key \"external_orders_sales_channel_id_fkey\" on \"external_orders\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "external_orders_sales_channel_id_fkey",
+        "table": "external_orders"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"external_orders_sales_channel_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "external_orders_sales_channel_id_fkey",
+          "public",
+          "\"public\".\"external_orders\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"external_orders_sales_channel_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"external_orders\"\nADD CONSTRAINT \"external_orders_sales_channel_id_fkey\"\nFOREIGN KEY (\"sales_channel_id\")\nREFERENCES \"public\".\"sales_channel\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"external_orders_sales_channel_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "external_orders_sales_channel_id_fkey",
+          "public",
+          "\"public\".\"external_orders\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.product_mappings.product_mappings_sales_channel_id_fkey",
+    "label": "Add foreign key \"product_mappings_sales_channel_id_fkey\" on \"product_mappings\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "product_mappings_sales_channel_id_fkey",
+        "table": "product_mappings"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"product_mappings_sales_channel_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "product_mappings_sales_channel_id_fkey",
+          "public",
+          "\"public\".\"product_mappings\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"product_mappings_sales_channel_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"product_mappings\"\nADD CONSTRAINT \"product_mappings_sales_channel_id_fkey\"\nFOREIGN KEY (\"sales_channel_id\")\nREFERENCES \"public\".\"sales_channel\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"product_mappings_sales_channel_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "product_mappings_sales_channel_id_fkey",
+          "public",
+          "\"public\".\"product_mappings\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.product_mappings.product_mappings_[product_id]_fkey",
+    "label": "Add foreign key \"product_mappings_[product_id]_fkey\" on \"product_mappings\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "product_mappings_[product_id]_fkey",
+        "table": "product_mappings"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"product_mappings_[product_id]_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "product_mappings_[product_id]_fkey",
+          "public",
+          "\"public\".\"product_mappings\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"product_mappings_[product_id]_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"product_mappings\"\nADD CONSTRAINT \"product_mappings_[product_id]_fkey\"\nFOREIGN KEY (\"[product_id]\")\nREFERENCES \"public\".\"Product\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"product_mappings_[product_id]_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "product_mappings_[product_id]_fkey",
+          "public",
+          "\"public\".\"product_mappings\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.sales_channel.sales_channel_business_id_fkey",
+    "label": "Add foreign key \"sales_channel_business_id_fkey\" on \"sales_channel\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "sales_channel_business_id_fkey",
+        "table": "sales_channel"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"sales_channel_business_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "sales_channel_business_id_fkey",
+          "public",
+          "\"public\".\"sales_channel\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"sales_channel_business_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"sales_channel\"\nADD CONSTRAINT \"sales_channel_business_id_fkey\"\nFOREIGN KEY (\"business_id\")\nREFERENCES \"public\".\"businesses\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"sales_channel_business_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "sales_channel_business_id_fkey",
+          "public",
+          "\"public\".\"sales_channel\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.supplies.supplies_business_id_fkey",
+    "label": "Add foreign key \"supplies_business_id_fkey\" on \"supplies\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "supplies_business_id_fkey",
+        "table": "supplies"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"supplies_business_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "supplies_business_id_fkey",
+          "public",
+          "\"public\".\"supplies\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"supplies_business_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"supplies\"\nADD CONSTRAINT \"supplies_business_id_fkey\"\nFOREIGN KEY (\"business_id\")\nREFERENCES \"public\".\"businesses\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"supplies_business_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "supplies_business_id_fkey",
+          "public",
+          "\"public\".\"supplies\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.supply_lots.supply_lots_supply_id_fkey",
+    "label": "Add foreign key \"supply_lots_supply_id_fkey\" on \"supply_lots\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "supply_lots_supply_id_fkey",
+        "table": "supply_lots"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"supply_lots_supply_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "supply_lots_supply_id_fkey",
+          "public",
+          "\"public\".\"supply_lots\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"supply_lots_supply_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"supply_lots\"\nADD CONSTRAINT \"supply_lots_supply_id_fkey\"\nFOREIGN KEY (\"supply_id\")\nREFERENCES \"public\".\"supplies\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"supply_lots_supply_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "supply_lots_supply_id_fkey",
+          "public",
+          "\"public\".\"supply_lots\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.users.users_business_id_fkey",
+    "label": "Add foreign key \"users_business_id_fkey\" on \"users\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "users_business_id_fkey",
+        "table": "users"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"users_business_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "users_business_id_fkey",
+          "public",
+          "\"public\".\"users\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"users_business_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"users\"\nADD CONSTRAINT \"users_business_id_fkey\"\nFOREIGN KEY (\"business_id\")\nREFERENCES \"public\".\"businesses\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"users_business_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "users_business_id_fkey",
+          "public",
+          "\"public\".\"users\""
+        ]
+      }
+    ]
+  }
+]

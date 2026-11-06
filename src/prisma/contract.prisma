@@ -1,0 +1,185 @@
+// use prisma-8
+
+model Business {
+    id          Int         @id @default(autoincrement())
+    name        String
+    createdAt   DateTime    @default(now()) @map("created_at")
+
+    users           User[]
+    categories      Category[]
+    products        Product[]
+    supplies        Supply[]
+    salesChannels   SalesChannel[]
+    externalOrders  ExternalOrder[]
+
+    @@map("businesses")
+}
+
+model User {
+    id          Int         @id @default(autoincrement())
+    businessId  Int         @map("business_id")
+    email       String      @unique
+    name        String?
+    role        String      @default("owner")
+    createdAt   DateTime    @default(now()) @map("created_at")
+
+    business Business @relation(fields: [businessId], references: [id])
+
+    @@map("users")
+}
+
+model SalesChannel {
+    id              Int         @id @default(autoincrement())
+    businessId      Int         @map("business_id")
+    type            String
+    displayName     String      @map("display_name")
+    accessToken     String?     @map("access_token")
+    refreshToken    String?     @map("refresh_token")
+    externalShopId  String?     @map("external_shop_id")
+    lastSyncedAt    DateTime?   @map("last_synced_at")
+    createdAt       DateTime    @default(now()) @map("created_at")
+
+    business        Business    @relation(fields: [businessId], references: [id])
+    externalOrders  ExternalOrder[]
+    productMappings ProductMapping[]
+
+    @@unique([businessId, type, externalShopId])
+    @@map("sales_channel")
+}
+
+model Category {
+    id          Int     @id @default(autoincrement())
+    businessId  Int     @map("business_id")
+    name        String  
+    
+    business Business   @relation(fields: [businessId], references: [id])
+    products Product[]
+
+    @@unique([businessId, name])
+    @@map("categories")
+}
+
+model Product {
+    id          Int         @id @default(autoincrement())
+    businessId  Int         @map("business_id")
+    name        String
+    description String?
+    price       Numeric(10, 2)
+    cost        Numeric(10, 2)?
+    categoryId  Int?        @map("category_id")
+
+    business            Business    @relation(fields: [businessId], references: [id])
+    category            Category?   @relation(fields: [categoryId], references: [id])
+    externalOrderItems  ExternalOrderItem[]
+    productMappings     ProductMapping[]
+    batches             Batch[]
+    billOfMaterials     BillOfMaterial[]
+}
+
+model ExternalOrder {
+    id              Int         @id @default(autoincrement())
+    businessId      Int         @map("business_id")
+    salesChannelId  Int         @map("sales_channel_id")
+    externalOrderId String      @map("external_order_id")
+    orderedAt       DateTime    @map("ordered_at")
+    lastSyncedAt    DateTime    @map("last_synced_at")
+
+    business        Business            @relation(fields: [businessId], references: [id])
+    salesChannel    SalesChannel        @relation(fields: [salesChannelId], references: [id])
+    items           ExternalOrderItem[]
+
+    @@unique([salesChannelId, externalOrderId])
+    @@map("external_orders")
+}
+
+model ExternalOrderItem {
+    id                  Int             @id @default(autoincrement())
+    orderId             Int             @map("order_id")
+    externalLineItemId  String          @map("external_line_item_id")
+    productId           Int             @map("product_id")
+    quantity            Int
+    unitPrice           Numeric(10, 2)  @map("unit_price")
+
+    order   ExternalOrder   @relation(fields: [orderId], references: [id])
+    product Product         @relation(fields: [productId], references: [id])
+    
+    @@unique([orderId, externalLineItemId])
+    @@map("external_order_items")
+}
+
+model ProductMapping {
+    id                      Int     @id @default(autoincrement())
+    salesChannelId          Int     @map("sales_channel_id")
+    externalSkuOrProductId  String  @map("external_sku_or_product_id")
+    productId               Int     @map("product_id")
+
+    salesChannel    SalesChannel    @relation(fields: [salesChannelId], references: [id])
+    product         Product         @relation(fields: [productId], references: [id])
+
+    @@unique([salesChannelId, externalSkuOrProductId])
+    @@map("product_mappings")
+}
+
+model Supply {
+    id          Int     @id @default(autoincrement())
+    businessId  Int     @map("business_id")
+    name        String
+
+    business        Business    @relation(fields: [businessId], references: [id])
+    billOfMaterials BillOfMaterial[]
+    supplyLots      SupplyLot[]
+
+    @@map("supplies")
+}
+
+model BillOfMaterial {
+    productId   Int             @map("product_id")
+    supplyId    Int             @map("supply_id")
+    qtyRequired Numeric(10, 2)  @map("qty_required")
+    unit        String
+
+    product Product @relation(fields: [productId], references: [id])
+    supply  Supply  @relation(fields: [supplyId], references: [id])
+
+    @@id([productId, supplyId])
+    @@map("bill_of_materials")
+}   
+
+model SupplyLot {
+    id              Int             @id @default(autoincrement())
+    supplyId        Int                             @map("supply_id")
+    purchasedAt     DateTime        @default(now()) @map("purchased_at")
+    qtyPurchased    Numeric(10, 4)                  @map("qty_purchased")
+    qtyRemaining    Numeric(10, 4)                  @map("qty_remaining")
+    unit            String
+    totalCost       Numeric(10, 4)  @map("total_cost")
+
+    supply              Supply  @relation(fields: [supplyId], references: [id])
+    batchSupplyUsage    BatchSupplyUsage[]
+
+    @@map("supply_lots")
+}
+
+model Batch {
+    id          Int         @id @default(autoincrement())
+    productId   Int                         @map("product_id")
+    madeAt      DateTime    @default(now()) @map("made_at")
+    qtyMade     Int                         @map("qty_made")
+
+    product             Product     @relation(fields: [productId], references: [id])
+    batchSupplyUsage    BatchSupplyUsage[]
+
+    @@map("batches")
+}
+
+model BatchSupplyUsage {
+    batchId     Int             @map("batch_id")
+    supplyLotId Int             @map("supply_lot_id")
+    qtyUsed     Numeric(10, 2)  @map("qty_used")
+
+    batch       Batch       @relation(fields: [batchId], references: [id])
+    supplyLot   SupplyLot   @relation(fields: [supplyLotId], references: [id])
+
+    @@id([batchId, supplyLotId])
+    @@map("batch_supply_usage")
+}
