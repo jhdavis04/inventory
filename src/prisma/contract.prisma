@@ -94,6 +94,7 @@ model ExternalOrder {
 
 model ExternalOrderItem {
     id                  Int             @id @default(autoincrement())
+    businessId  Int                     @map("business_id")
     orderId             Int             @map("order_id")
     externalLineItemId  String          @map("external_line_item_id")
     productId           Int             @map("product_id")
@@ -109,6 +110,7 @@ model ExternalOrderItem {
 
 model ProductMapping {
     id                      Int     @id @default(autoincrement())
+    businessId  Int                 @map("business_id")
     salesChannelId          Int     @map("sales_channel_id")
     externalSkuOrProductId  String  @map("external_sku_or_product_id")
     productId               Int     @map("product_id")
@@ -135,6 +137,7 @@ model Supply {
 model BillOfMaterial {
     productId   Int             @map("product_id")
     supplyId    Int             @map("supply_id")
+    businessId  Int             @map("business_id")
     qtyRequired Numeric(10, 2)  @map("qty_required")
     unit        String
 
@@ -148,6 +151,7 @@ model BillOfMaterial {
 model SupplyLot {
     id              Int             @id @default(autoincrement())
     supplyId        Int                             @map("supply_id")
+    businessId      Int                             @map("business_id")
     purchasedAt     DateTime        @default(now()) @map("purchased_at")
     qtyPurchased    Numeric(10, 4)                  @map("qty_purchased")
     qtyRemaining    Numeric(10, 4)                  @map("qty_remaining")
@@ -162,6 +166,7 @@ model SupplyLot {
 
 model Batch {
     id          Int         @id @default(autoincrement())
+    businessId  Int                         @map("business_id")
     productId   Int                         @map("product_id")
     madeAt      DateTime    @default(now()) @map("made_at")
     qtyMade     Int                         @map("qty_made")
@@ -175,6 +180,7 @@ model Batch {
 model BatchSupplyUsage {
     batchId     Int             @map("batch_id")
     supplyLotId Int             @map("supply_lot_id")
+    businessId  Int             @map("business_id")
     qtyUsed     Numeric(10, 2)  @map("qty_used")
 
     batch       Batch       @relation(fields: [batchId], references: [id])

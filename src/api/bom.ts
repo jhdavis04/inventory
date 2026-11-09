@@ -6,6 +6,7 @@ import { parseId } from '../lib/middleware'
 
 const router = express.Router();
 const BillOfMaterial = db.orm.public.BillOfMaterial;
+const Product = db.orm.public.BillOfMaterial
 
 router.get('/api/products/:id/bom', async(req, res) => {
     const productId = parseId(req.params.id);
@@ -17,7 +18,7 @@ router.post('/api/products/:id/bom', async(req, res) => {
     if (!productId) return res.status(400).json({ error: 'Invalid id'});
 
     const { supplyId, qtyRequired, unit } = req.body ?? {};
-    res.status(201).json(await BillOfMaterial.create({ productId, supplyId, qtyRequired, unit }));
+    res.status(201).json(await BillOfMaterial.create({ productId, supplyId, qtyRequired, unit, businessId }));
 });
 
 router.delete('/api/products/:id/bom/:supplyId', async (req, res) => {
@@ -27,3 +28,5 @@ router.delete('/api/products/:id/bom/:supplyId', async (req, res) => {
     const rows = await BillOfMaterial.where({ productId, supplyId }).deleteAll();
     res.status(204).send();
 });
+
+export default router;

@@ -63,6 +63,13 @@
         "models": {
           "Batch": {
             "fields": {
+              "businessId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
               "id": {
                 "nullable": false,
                 "type": {
@@ -73,8 +80,11 @@
               "madeAt": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/timestamptz-temporal@1",
-                  "kind": "scalar"
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
                 }
               },
               "productId": {
@@ -127,6 +137,9 @@
             },
             "storage": {
               "fields": {
+                "businessId": {
+                  "column": "business_id"
+                },
                 "id": {
                   "column": "id"
                 },
@@ -147,6 +160,13 @@
           "BatchSupplyUsage": {
             "fields": {
               "batchId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "businessId": {
                 "nullable": false,
                 "type": {
                   "codecId": "pg/int4@1",
@@ -211,6 +231,9 @@
                 "batchId": {
                   "column": "batch_id"
                 },
+                "businessId": {
+                  "column": "business_id"
+                },
                 "qtyUsed": {
                   "column": "qty_used"
                 },
@@ -224,6 +247,13 @@
           },
           "BillOfMaterial": {
             "fields": {
+              "businessId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
               "productId": {
                 "nullable": false,
                 "type": {
@@ -293,6 +323,9 @@
             },
             "storage": {
               "fields": {
+                "businessId": {
+                  "column": "business_id"
+                },
                 "productId": {
                   "column": "product_id"
                 },
@@ -315,8 +348,11 @@
               "createdAt": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/timestamptz-temporal@1",
-                  "kind": "scalar"
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
                 }
               },
               "id": {
@@ -541,15 +577,21 @@
               "lastSyncedAt": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/timestamptz-temporal@1",
-                  "kind": "scalar"
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
                 }
               },
               "orderedAt": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/timestamptz-temporal@1",
-                  "kind": "scalar"
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
                 }
               },
               "salesChannelId": {
@@ -636,6 +678,13 @@
           },
           "ExternalOrderItem": {
             "fields": {
+              "businessId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
               "externalLineItemId": {
                 "nullable": false,
                 "type": {
@@ -719,6 +768,9 @@
             },
             "storage": {
               "fields": {
+                "businessId": {
+                  "column": "business_id"
+                },
                 "externalLineItemId": {
                   "column": "external_line_item_id"
                 },
@@ -926,6 +978,13 @@
           },
           "ProductMapping": {
             "fields": {
+              "businessId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
               "externalSkuOrProductId": {
                 "nullable": false,
                 "type": {
@@ -991,6 +1050,9 @@
             },
             "storage": {
               "fields": {
+                "businessId": {
+                  "column": "business_id"
+                },
                 "externalSkuOrProductId": {
                   "column": "external_sku_or_product_id"
                 },
@@ -998,7 +1060,7 @@
                   "column": "id"
                 },
                 "productId": {
-                  "column": "[product_id]"
+                  "column": "product_id"
                 },
                 "salesChannelId": {
                   "column": "sales_channel_id"
@@ -1027,8 +1089,11 @@
               "createdAt": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/timestamptz-temporal@1",
-                  "kind": "scalar"
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
                 }
               },
               "displayName": {
@@ -1055,8 +1120,11 @@
               "lastSyncedAt": {
                 "nullable": true,
                 "type": {
-                  "codecId": "pg/timestamptz-temporal@1",
-                  "kind": "scalar"
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
                 }
               },
               "refreshToken": {
@@ -1246,6 +1314,13 @@
           },
           "SupplyLot": {
             "fields": {
+              "businessId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
               "id": {
                 "nullable": false,
                 "type": {
@@ -1256,8 +1331,11 @@
               "purchasedAt": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/timestamptz-temporal@1",
-                  "kind": "scalar"
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
                 }
               },
               "qtyPurchased": {
@@ -1267,7 +1345,7 @@
                   "kind": "scalar",
                   "typeParams": {
                     "precision": 10,
-                    "scale": 2
+                    "scale": 4
                   }
                 }
               },
@@ -1278,7 +1356,7 @@
                   "kind": "scalar",
                   "typeParams": {
                     "precision": 10,
-                    "scale": 2
+                    "scale": 4
                   }
                 }
               },
@@ -1296,7 +1374,7 @@
                   "kind": "scalar",
                   "typeParams": {
                     "precision": 10,
-                    "scale": 2
+                    "scale": 4
                   }
                 }
               },
@@ -1343,6 +1421,9 @@
             },
             "storage": {
               "fields": {
+                "businessId": {
+                  "column": "business_id"
+                },
                 "id": {
                   "column": "id"
                 },
@@ -1381,8 +1462,11 @@
               "createdAt": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/timestamptz-temporal@1",
-                  "kind": "scalar"
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
                 }
               },
               "email": {
@@ -1588,6 +1672,11 @@
                   "dataType": "pg/int4",
                   "nullable": false
                 },
+                "business_id": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": false
+                },
                 "qty_used": {
                   "codecId": "pg/numeric@1",
                   "dataType": "pg/numeric",
@@ -1671,6 +1760,11 @@
             },
             "batches": {
               "columns": {
+                "business_id": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": false
+                },
                 "id": {
                   "codecId": "pg/int4@1",
                   "dataType": "pg/int4",
@@ -1681,9 +1775,16 @@
                   "nullable": false
                 },
                 "made_at": {
-                  "codecId": "pg/timestamptz-temporal@1",
+                  "codecId": "pg/timestamptz-date@1",
                   "dataType": "pg/timestamptz",
-                  "nullable": false
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
                 },
                 "product_id": {
                   "codecId": "pg/int4@1",
@@ -1736,6 +1837,11 @@
             },
             "bill_of_materials": {
               "columns": {
+                "business_id": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": false
+                },
                 "product_id": {
                   "codecId": "pg/int4@1",
                   "dataType": "pg/int4",
@@ -1830,13 +1936,16 @@
             "businesses": {
               "columns": {
                 "created_at": {
-                  "codecId": "pg/timestamptz-temporal@1",
+                  "codecId": "pg/timestamptz-date@1",
                   "dataType": "pg/timestamptz",
                   "default": {
                     "expression": "now()",
                     "kind": "function"
                   },
-                  "nullable": false
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
                 },
                 "id": {
                   "codecId": "pg/int4@1",
@@ -1931,6 +2040,11 @@
             },
             "external_order_items": {
               "columns": {
+                "business_id": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": false
+                },
                 "external_line_item_id": {
                   "codecId": "pg/text@1",
                   "dataType": "pg/text",
@@ -2064,14 +2178,20 @@
                   "nullable": false
                 },
                 "last_synced_at": {
-                  "codecId": "pg/timestamptz-temporal@1",
+                  "codecId": "pg/timestamptz-date@1",
                   "dataType": "pg/timestamptz",
-                  "nullable": false
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
                 },
                 "ordered_at": {
-                  "codecId": "pg/timestamptz-temporal@1",
+                  "codecId": "pg/timestamptz-date@1",
                   "dataType": "pg/timestamptz",
-                  "nullable": false
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
                 },
                 "sales_channel_id": {
                   "codecId": "pg/int4@1",
@@ -2153,7 +2273,7 @@
             },
             "product_mappings": {
               "columns": {
-                "[product_id]": {
+                "business_id": {
                   "codecId": "pg/int4@1",
                   "dataType": "pg/int4",
                   "nullable": false
@@ -2170,6 +2290,11 @@
                     "expression": "autoincrement()",
                     "kind": "function"
                   },
+                  "nullable": false
+                },
+                "product_id": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
                   "nullable": false
                 },
                 "sales_channel_id": {
@@ -2200,11 +2325,11 @@
                 },
                 {
                   "index": {
-                    "name": "product_mappings_[product_id]_idx_3a1ffd05"
+                    "name": "product_mappings_product_id_idx_22a2b7d2"
                   },
                   "source": {
                     "columns": [
-                      "[product_id]"
+                      "product_id"
                     ],
                     "namespaceId": "public",
                     "tableName": "product_mappings"
@@ -2221,10 +2346,10 @@
               "indexes": [
                 {
                   "columns": [
-                    "[product_id]"
+                    "product_id"
                   ],
-                  "name": "product_mappings_[product_id]_idx_3a1ffd05",
-                  "prefix": "product_mappings_[product_id]_idx",
+                  "name": "product_mappings_product_id_idx_22a2b7d2",
+                  "prefix": "product_mappings_product_id_idx",
                   "unique": false
                 },
                 {
@@ -2263,13 +2388,16 @@
                   "nullable": false
                 },
                 "created_at": {
-                  "codecId": "pg/timestamptz-temporal@1",
+                  "codecId": "pg/timestamptz-date@1",
                   "dataType": "pg/timestamptz",
                   "default": {
                     "expression": "now()",
                     "kind": "function"
                   },
-                  "nullable": false
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
                 },
                 "display_name": {
                   "codecId": "pg/text@1",
@@ -2291,9 +2419,12 @@
                   "nullable": false
                 },
                 "last_synced_at": {
-                  "codecId": "pg/timestamptz-temporal@1",
+                  "codecId": "pg/timestamptz-date@1",
                   "dataType": "pg/timestamptz",
-                  "nullable": true
+                  "nullable": true,
+                  "typeParams": {
+                    "precision": 3
+                  }
                 },
                 "refresh_token": {
                   "codecId": "pg/text@1",
@@ -2414,6 +2545,11 @@
             },
             "supply_lots": {
               "columns": {
+                "business_id": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": false
+                },
                 "id": {
                   "codecId": "pg/int4@1",
                   "dataType": "pg/int4",
@@ -2424,9 +2560,16 @@
                   "nullable": false
                 },
                 "purchased_at": {
-                  "codecId": "pg/timestamptz-temporal@1",
+                  "codecId": "pg/timestamptz-date@1",
                   "dataType": "pg/timestamptz",
-                  "nullable": false
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
                 },
                 "qty_purchased": {
                   "codecId": "pg/numeric@1",
@@ -2434,7 +2577,7 @@
                   "nullable": false,
                   "typeParams": {
                     "precision": 10,
-                    "scale": 2
+                    "scale": 4
                   }
                 },
                 "qty_remaining": {
@@ -2443,7 +2586,7 @@
                   "nullable": false,
                   "typeParams": {
                     "precision": 10,
-                    "scale": 2
+                    "scale": 4
                   }
                 },
                 "supply_id": {
@@ -2457,7 +2600,7 @@
                   "nullable": false,
                   "typeParams": {
                     "precision": 10,
-                    "scale": 2
+                    "scale": 4
                   }
                 },
                 "unit": {
@@ -2512,13 +2655,16 @@
                   "nullable": false
                 },
                 "created_at": {
-                  "codecId": "pg/timestamptz-temporal@1",
+                  "codecId": "pg/timestamptz-date@1",
                   "dataType": "pg/timestamptz",
                   "default": {
                     "expression": "now()",
                     "kind": "function"
                   },
-                  "nullable": false
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
                 },
                 "email": {
                   "codecId": "pg/text@1",
@@ -2599,7 +2745,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "3a9e851d336a8651a6e684ac2f470cb6acfef185b08019133970fd48e69142da"
+    "storageHash": "84b07f5898550777bed5ea037e20c0075733549ebf3ca195f1a2148a0cc7f3d0"
   },
   "capabilities": {
     "postgres": {

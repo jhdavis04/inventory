@@ -47,10 +47,11 @@ router.post('/api/supplies/:id/lots', async (req, res) => {
 
     const lot = await SupplyLot.create({
         supplyId: id,
+        businessId,
         qtyPurchased: toDecimal(qtyPurchased),
         qtyRemaining: toDecimal(qtyPurchased),
         unit,
-        totalCost: toDecimal(qtyPurchased),
+        totalCost: toDecimal(totalCost),
     });
 
     res.status(201).json(lot);
