@@ -16,14 +16,15 @@ model Business {
 }
 
 model User {
-    id          Int         @id @default(autoincrement())
-    businessId  Int         @map("business_id")
-    email       String      @unique
-    name        String?
-    role        String      @default("owner")
-    createdAt   DateTime    @default(now()) @map("created_at")
+    id              Int         @id @default(autoincrement())
+    businessId      Int         @map("business_id")
+    email           String      @unique
+    passwordHash    String      @map("password_hash")
+    name            String?
+    role            String      @default("owner")
+    createdAt       DateTime    @default(now()) @map("created_at")
 
-    business Business @relation(fields: [businessId], references: [id])
+    business        Business    @relation(fields: [businessId], references: [id])
 
     @@map("users")
 }
@@ -43,7 +44,13 @@ model SalesChannel {
     externalOrders  ExternalOrder[]
     productMappings ProductMapping[]
 
-    @@unique([businessId, type, externalShopId])
+    tokenExpiresAt         DateTime?  @map("token_expires_at")
+    refreshTokenExpiresAt  DateTime?  @map("refresh_token_expires_at")
+    scopes                 String?
+    needsReauth            Boolean    @default(false) @map("needs_reauth")
+
+    // unique ensures exclusivity
+    @@unique([type, externalShopId])
     @@map("sales_channel")
 }
 
@@ -64,9 +71,10 @@ model Product {
     businessId  Int         @map("business_id")
     name        String
     description String?
-    price       Numeric(10, 2)
-    cost        Numeric(10, 2)?
+    price       NumericString(10, 2)
+    cost        NumericString(10, 2)?
     categoryId  Int?        @map("category_id")
+    createdAt  DateTime     @default(now()) @map("created_at")
 
     business            Business    @relation(fields: [businessId], references: [id])
     category            Category?   @relation(fields: [categoryId], references: [id])
@@ -82,7 +90,7 @@ model ExternalOrder {
     salesChannelId  Int         @map("sales_channel_id")
     externalOrderId String      @map("external_order_id")
     orderedAt       DateTime    @map("ordered_at")
-    lastSyncedAt    DateTime    @map("last_synced_at")
+    lastSyncedAt    DateTime    @default(now()) @map("last_synced_at")
 
     business        Business            @relation(fields: [businessId], references: [id])
     salesChannel    SalesChannel        @relation(fields: [salesChannelId], references: [id])
@@ -97,12 +105,15 @@ model ExternalOrderItem {
     businessId  Int                     @map("business_id")
     orderId             Int             @map("order_id")
     externalLineItemId  String          @map("external_line_item_id")
-    productId           Int             @map("product_id")
+    productId           Int?            @map("product_id")
     quantity            Int
-    unitPrice           Numeric(10, 2)  @map("unit_price")
+    unitPrice           NumericString(10, 2)  @map("unit_price")
+    unitCost            NumericString(10, 2)? @map("unit_cost")
 
     order   ExternalOrder   @relation(fields: [orderId], references: [id])
-    product Product         @relation(fields: [productId], references: [id])
+    product Product?        @relation(fields: [productId], references: [id])
+    title   String?
+    sku     String?
     
     @@unique([orderId, externalLineItemId])
     @@map("external_order_items")
@@ -138,7 +149,7 @@ model BillOfMaterial {
     productId   Int             @map("product_id")
     supplyId    Int             @map("supply_id")
     businessId  Int             @map("business_id")
-    qtyRequired Numeric(10, 2)  @map("qty_required")
+    qtyRequired NumericString(10, 2)  @map("qty_required")
     unit        String
 
     product Product @relation(fields: [productId], references: [id])
@@ -153,10 +164,10 @@ model SupplyLot {
     supplyId        Int                             @map("supply_id")
     businessId      Int                             @map("business_id")
     purchasedAt     DateTime        @default(now()) @map("purchased_at")
-    qtyPurchased    Numeric(10, 4)                  @map("qty_purchased")
-    qtyRemaining    Numeric(10, 4)                  @map("qty_remaining")
+    qtyPurchased    NumericString(10, 4)                  @map("qty_purchased")
+    qtyRemaining    NumericString(10, 4)                  @map("qty_remaining")
     unit            String
-    totalCost       Numeric(10, 4)  @map("total_cost")
+    totalCost       NumericString(10, 4)  @map("total_cost")
 
     supply              Supply  @relation(fields: [supplyId], references: [id])
     batchSupplyUsage    BatchSupplyUsage[]
@@ -181,11 +192,48 @@ model BatchSupplyUsage {
     batchId     Int             @map("batch_id")
     supplyLotId Int             @map("supply_lot_id")
     businessId  Int             @map("business_id")
-    qtyUsed     Numeric(10, 2)  @map("qty_used")
+    qtyUsed     NumericString(10, 2)  @map("qty_used")
 
     batch       Batch       @relation(fields: [batchId], references: [id])
     supplyLot   SupplyLot   @relation(fields: [supplyLotId], references: [id])
 
     @@id([batchId, supplyLotId])
     @@map("batch_supply_usage")
+}
+
+model Webhooks {
+    id          String      @id
+    source      String
+    topic       String
+    shopId      String      @map("shop_id")
+    resourceUrl String?     @map("resource_url")
+    status      String      @default("received")
+    receivedAt  String      @default(now()) @map("received_at")
+
+    @@map("webhook_events")
+}
+
+model OauthState {
+    id            String   @id                       // the random "state" value
+    provider      String                              // "etsy" | "shopify"
+    businessId    Int      @map("business_id")
+    codeVerifier  String?  @map("code_verifier")      // Etsy's PKCE secret
+    shop          String?                             // Shopify: the shop we sent them to
+    createdAt     DateTime @default(now()) @map("created_at")
+
+    @@map("oauth_states")
+}
+
+model Expense {
+    id          Int            @id @default(autoincrement())
+    businessId  Int            @map("business_id")
+    category    String
+    description String?
+    amount      NumericString(10, 2)
+    incurredOn  String         @map("incurred_on")
+    createdAt   DateTime       @default(now()) @map("created_at")
+
+    business Business @relation(fields: [businessId], references: [id])
+
+    @@map("expenses")
 }

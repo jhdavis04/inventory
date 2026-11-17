@@ -11,9 +11,21 @@ import batchesRouter from './api/batches';
 import salesChannelRouter from './api/salesChannels';
 import ordersRouter from './api/orders';
 import { mappingsByProduct, productMappings } from './api/productMappings';
+import authRouter from './api/auth';
+import { requireAuth } from './middleware/requireAuth';
+import webhooksRouter from './api/webhooks';
+import { oauthCallbacks, oauthStart } from './api/oauth'; // OAUTH
 
 const app = express();
+
+app.use('/api/webhooks', webhooksRouter)
 app.use(express.json);
+
+app.use('/api/auth', authRouter)
+
+app.use('/api/oauth', oauthCallbacks);  // OAUTH
+
+app.use('/api', requireAuth)
 
 app.use('/api/business', businessRouter);
 app.use('/api/catergories', categoryRouter);
@@ -23,9 +35,13 @@ app.use('/api/products', costRouter);
 app.use('/api/products', mappingsByProduct);
 app.use('/api/supplies', suppliesRouter);
 app.use('/api/batches', batchesRouter);
+
+app.use('/api/sales-channels/connect', oauthStart);  // OAUTH
+
 app.use('/api/sales-channels', salesChannelRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/product-mappings', productMappings);
+
 
 app.use((req, res) => res.status(404).json({ error: 'Not Found' }));
 

@@ -1,8 +1,8 @@
 import express from 'express';
 
 import { db } from '../prisma/db'
-import { businessId } from '../lib/tenant'
-import { defined, parseId, isText, isDuplicate, isInUse } from '../lib/middleware'
+import { currentUser } from '../lib/tenant';
+import { defined, parseId, isText, isDuplicate, isInUse } from '../lib/helperFunctions'
 
 const router = express.Router();
 const SalesChannel = db.orm.public.SalesChannel;
@@ -10,18 +10,21 @@ const SalesChannel = db.orm.public.SalesChannel;
 const types = [ 'etsy', 'shopify', 'custon' ];
 
 router.get('/api/sales-channels', async (req, res) => {
+    const { businessId } = currentUser(res);
     const channels = await SalesChannel.where({ businessId }).select('id', 'type', 'displayName', 'externalShopId', 'lastSyncedAt')
         .all();
     res.json(channels);
 });
 
 router.post('api/sales-channels', async (req, res) => {
+    const { businessId } = currentUser(res);
     const { type, displayName, externalShopId } = req.body ?? {};
     if (!types.includes(type) || !isText(displayName)) {
         return res.status(400).json({ error: `type (${types.join('/')}) and displayName are required` });
     }
 
-    try {
+    // DUE TO OAUTH CONNECTING ETSY AND SHOPIFY IS THIS BLOCK STILL NECESSARY??
+    /* try {
         const channel = await SalesChannel.create({
             type, displayName, businessId, ...defined({ externalShopId }),
         });
@@ -29,10 +32,14 @@ router.post('api/sales-channels', async (req, res) => {
     } catch (e) {
         if (isDuplicate(e)) return res.status(409).json({ error: 'That shop is already connected' });
         throw e
-    }
+    }*/
+    const channel = await SalesChannel.create({ type: 'custom', displayName, businessId });
+    res.status(201).json({ id: channel.id, type: channel.type, displayName: channel.displayName });
+
 });
 
 router.delete('/api/sales-channel/:id', async (req, res) => {
+    const { businessId } = currentUser(res);
     const id = parseId(req.params.id);
     if(!id) return res.status(400).json({ error: 'Invalid id '});
 

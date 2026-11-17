@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
     "target": "ES2022",
+    "lib": [
+      "ES2022",
+      "ESNext.Temporal"
+    ],
     "module": "preserve",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
@@ -10,7 +14,8 @@
     "strict": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    
   },
   "include": [
     "**/*.ts"

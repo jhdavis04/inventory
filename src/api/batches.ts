@@ -1,7 +1,7 @@
 import express from 'express';
 import { db } from '../prisma/db';
-import { businessId } from '../lib/tenant';
-import { parseId, round2, toDecimal, ownsProduct } from '../lib/middleware';
+import { currentUser } from '../lib/tenant';
+import { parseId, round2, toDecimal, ownsProduct } from '../lib/helperFunctions';
 
 const router = express.Router();
 const Batch = db.orm.public.Batch;
@@ -11,6 +11,7 @@ const SupplyLot = db.orm.public.SupplyLot;
 class BatchError extends Error {}
 
 router.get("/api/batches", async (req, res) => {
+    const { businessId } = currentUser(res);
     res.json(await Batch.where({ businessId }).orderBy((b) => b.id.desc()).limit(50).all());
 });
 
@@ -18,6 +19,7 @@ router.get('/api/batches/:id', async (req, res) => {
     const id = parseId(req.params.id);
     if (!id) return res.status(400).json({ error: 'Invalid ID' });
 
+    const { businessId } = currentUser(res);
     const batch = await Batch.where({ id, businessId }).first();
     if (!batch) return res.status(400).json({ error: 'Batch not found' });
 
@@ -29,17 +31,20 @@ router.get('/api/batches/:id', async (req, res) => {
 
 router.post('/api/batches', async (req, res) => {
     const { productId, qtyMade } = req.body ?? {};
+    const { businessId } = currentUser(res);
+    
     if (!parseId(productId) || !Number.isInteger(qtyMade) || qtyMade <= 0) {
         return res.status(400).json({ error: 'productId and a positive whole qtyMade are required'});
     }
-    if (!(await ownsProduct(productId))) return res.status(404).json({ error: 'Product not found' });
+    if (!(await ownsProduct(businessId, productId))) return res.status(404).json({ error: 'Product not found' });
 
     // If anything is thrown, the entire transaction is undone
     try {
         const batch = await db.transaction(async (tx) => {
             const recipe = await tx.orm.public.BillOfMaterial.where({ productId }).all()
             if (recipe.length === 0) throw new BatchError('This product has no recipe');
-    
+            
+            const { businessId } = currentUser(res);
             const batch = await tx.orm.public.Batch.create({ businessId, productId, qtyMade});
             
             for (const item of recipe) {
