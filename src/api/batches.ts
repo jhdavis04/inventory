@@ -10,11 +10,13 @@ const SupplyLot = db.orm.public.SupplyLot;
 
 class BatchError extends Error {}
 
+// returns a list of all batches in table
 router.get("/api/batches", async (req, res) => {
     const { businessId } = currentUser(res);
     res.json(await Batch.where({ businessId }).orderBy((b) => b.id.desc()).limit(50).all());
 });
 
+// gets specific batch by id number
 router.get('/api/batches/:id', async (req, res) => {
     const id = parseId(req.params.id);
     if (!id) return res.status(400).json({ error: 'Invalid ID' });
@@ -29,6 +31,7 @@ router.get('/api/batches/:id', async (req, res) => {
     res.json({ ...batch, usage: usage.map((u, i) => ({ ...u, supplyLot: lots[i] })) });
 });
 
+// creates a batch using a product and how much was made
 router.post('/api/batches', async (req, res) => {
     const { productId, qtyMade } = req.body ?? {};
     const { businessId } = currentUser(res);

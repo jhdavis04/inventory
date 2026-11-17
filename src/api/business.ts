@@ -1,19 +1,18 @@
 import express from 'express';
 import { db } from '../prisma/db';
 import { currentUser } from '../lib/tenant';
-// import { } from '../lib/middleware';
 
 const router = express.Router();
 const Business = db.orm.public.Business;
 
-router.get('/', async (req, res) => {
+router.get('/api/business', async (req, res) => {
     const { businessId } = currentUser(res);
     const business = await Business.where({id: businessId}).first
     // error validation?
     res.json(business);
 })
 
-router.patch('/', async (req, res) => {
+router.patch('/api/business', async (req, res) => {
     const { businessId } = currentUser(res);
     const { name } = req.body ?? {};
     // name validation?

@@ -12,6 +12,7 @@ const router = express.Router();
 const Business = db.orm.public.Business;
 const User = db.orm.public.User;
 
+// dummy values used to prevent users from timeing whether emails are within the user database or not BASIC SECURITY
 let dummyHash: Promise<string> | undefined;
 const getDummyHash = () => (dummyHash ??= hashPassword('not-a-real-password'));
 
@@ -22,6 +23,7 @@ const cleanEmail = (v: unknown) => (typeof v === 'string' ? v.trim().toLowerCase
 const emailOk = (e: string) => e.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 const passwordOk = (p: unknown): p is string => typeof p === 'string' && p.length >= 8 && p.length <= 128
 
+// creation call taht allows for businesses to sign up for application
 router.post('/api/auth/signup', limiter, async (req, res) => {
     const { businessName, name, password } = req.body ?? {}
     const email = cleanEmail(req.body?.email);
@@ -50,6 +52,7 @@ router.post('/api/auth/signup', limiter, async (req, res) => {
     }
 });
 
+// call that allows users to login
 router.post('/login', limiter, async (req, res) => {
     const email = cleanEmail(req.body?.email);
     const password = req.body?.password;
@@ -70,6 +73,7 @@ router.post('/login', limiter, async (req, res) => {
     res.json({ token: signToken(user.id), user: { id: user.id, email: user.email, name: user.name, role: user.role }, });
 });
 
+// call that checks to see if there is an account with the information given by the user
 router.get('/me', requireAuth, async (req, res) => {
     const { id, businessId } = currentUser(res);
     const user = await User.where({ id }).first();

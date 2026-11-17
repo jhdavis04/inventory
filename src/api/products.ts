@@ -17,12 +17,16 @@ router.get('/api/products', async (req, res) => {
 // get products + category + bom
 router.get('/api/products/:id', async (req, res) => {
     const { businessId } = currentUser(res);
+
     const id = parseId(req.params.id);
+    if (!id) return res.status(400).json({ error: 'Invalid id' });
+
     const product = await Product.where({ id, businessId }).include('category').first();
     const billOfMaterials = await BillOfMaterial.where({ productId: id}).all();
     res.json({ ...product, billOfMaterials});
 });
 
+// creates a new product
 router.post('/api/products', async (req, res) => {
     const { businessId } = currentUser(res);
     const { name, description, price, cost, categoryId } = req.body ?? {};
@@ -35,18 +39,26 @@ router.post('/api/products', async (req, res) => {
     res.status(201).json(product);
 });
 
+// updates a product fetched through an id
 router.patch('/api/products/:id', async (req, res) => {
     const { businessId } = currentUser(res);
+
     const id = parseId(req.params.id);
+    if (!id) return res.status(400).json({ error: 'Invalid id' });
+
     const { name, description, price, cost, categoryId } = req.body ?? {};
     const changes = defined({ name, description, price, cost, categoryId });
     const rows = await Product.where({ id, businessId }).updateAll(changes);
     res.json(rows[0]);
 });
 
+// deletes a product through an id
 router.delete('/api/products/:id', async (req, res) => {
     const { businessId } = currentUser(res);
+
     const id = parseId(req.params.id);
+    if (!id) return res.status(400).json({ error: 'Invalid id' });
+
     const rows = await Product.where({ id, businessId }).deleteAll();
     res.status(204).send();
 });

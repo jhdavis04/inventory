@@ -40,7 +40,6 @@ productMappings.post("/api/product-mappings", async (req, res) => {
 productMappings.delete('/api/product-mappings/:id', async (req, res) => {
     const { businessId } = currentUser(res);
     const id = parseId(req.params.id);
-    
     if (!id) return res.status(400).json({ error: 'Invalid id' });
 
     const mapping = await ProductMapping.where({ id }).first();

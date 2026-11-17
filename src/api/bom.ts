@@ -11,7 +11,7 @@ const BillOfMaterial = db.orm.public.BillOfMaterial;
 router.get('/api/products/:id/bom', async(req, res) => {
     const { businessId } = currentUser(res);
     const productId = parseId(req.params.id);
-
+    
     if (!productId) return res.status(400).json({ error: 'Invalid id'});
     if (!(await ownsProduct(businessId, productId))) return res.status(404).json({ error: 'Product not found' });
 

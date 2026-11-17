@@ -23,7 +23,10 @@ router.post('/api/categories', async (req, res) => {
 // update category
 router.patch('/api/categories:id', async (req, res) => {
     const { businessId } = currentUser(res);
+
     const id = parseId(req.params.id);
+    if (!id) return res.status(400).json({ error: 'Invalid id' });
+
     const { name } = req.body ?? {};
     const rows = await Category.where({ id, businessId}).updateAll({ name });
     res.json(rows[0]);
@@ -32,7 +35,10 @@ router.patch('/api/categories:id', async (req, res) => {
 // delete category
 router.delete('/api/catergories/:id', async (req, res) => {
     const { businessId } = currentUser(res);
+    
     const id = parseId(req.params.id);
+    if (!id) return res.status(400).json({ error: 'Invalid id' });
+
     const rows = await Category.where({ id, businessId }).deleteAll();
     res.status(204).send();
 });

@@ -10,6 +10,7 @@ const router = express.Router();
 // returns how much it costs to make a product
 router.get('/api/products/:id/cost', async(req, res) => {
     const { businessId } = currentUser(res);
+
     const id = parseId(req.params.id);
     if (!id) return res.status(404).json({ error: 'Invalid ID'});
 
@@ -28,6 +29,7 @@ router.get('/api/products/:id/cost', async(req, res) => {
 // returns what the profit margin is on a product
 router.get('/api/products/:id/profit', async(req, res) => {
     const { businessId } = currentUser(res);
+    
     const id = parseId(req.params.id);
     if (!id) return res.status(404).json({ error: 'Invalid ID'});
 

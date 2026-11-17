@@ -20,26 +20,35 @@ router.post('/api/supplies', async (req, res) => {
 });
 
 router.get('/api/supplies/:id', async (req, res) => {
-    const id = parseId(req.params.id);
     const { businessId } = currentUser(res);
+
+    const id = parseId(req.params.id);
+    if (!id) return res.status(400).json({ error: 'Invalid id' });
+
     const supply = await Supply.where({ id, businessId }).include('supplyLots').first();
     res.json(supply);
 });
 
 router.delete('/api/supplies/:id', async (req, res) => {
     const { businessId } = currentUser(res);
+
     const id = parseId(req.params.id);
+    if (!id) return res.status(400).json({ error: 'Invalid id' });
+
     const rows = await Supply.where({ id, businessId }).deleteAll();
     res.status(204).send();
 });
 
 router.get('/api/supplies/:id/lots', async (req, res) => {
     const id = parseId(req.params.id);
+    if (!id) return res.status(400).json({ error: 'Invalid id' });
+
     res.json(await SupplyLot.where({ supplyId: id }).all());
 });
 
 router.post('/api/supplies/:id/lots', async (req, res) => {
     const { businessId } = currentUser(res);
+    
     const id = parseId(req.params.id);
     if (!id) return res.status(400).json({ error: 'Invalid supplyId'});
     
